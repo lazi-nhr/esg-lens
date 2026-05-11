@@ -18,6 +18,18 @@ import os
 import json
 import urllib.request
 import urllib.error
+import logging
+
+# ── Logging configuration ─────────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/tmp/frontend.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # ── Backend URL ──────────────────────────────────────────────────────────
 # The backend lives on the Nuvolos internal network.  Its hostname is set
@@ -47,6 +59,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
         """Forward a request to the backend and relay its response."""
         try:
             backend_url = f"{BACKEND_HOST}{self.path}"
+            logger.info(f"{method} {self.path} → {backend_url}")
             
             # Read request body for POST requests
             content_length = int(self.headers.get('Content-Length', 0))
@@ -64,6 +77,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
             with urllib.request.urlopen(req) as response:
                 # Send response status
                 self.send_response(response.status)
+                logger.info(f"Backend returned {response.status}")
                 
                 # Forward response headers
                 for header, value in response.headers.items():
@@ -76,6 +90,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
                 
         except urllib.error.HTTPError as e:
             # Forward HTTP errors from backend
+            logger.warning(f"Backend returned HTTP {e.code}: {e.reason}")
             self.send_response(e.code)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
@@ -83,7 +98,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
             self.wfile.write(error_body)
         except Exception as e:
             # Handle other errors
-            print(f"Error proxying request: {e}")
+            logger.error(f"Error proxying request: {type(e).__name__}: {e}")
             self.send_response(502)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
@@ -168,15 +183,15 @@ def run_server(port=None):
     server_address = ('', port)
     httpd = HTTPServer(server_address, StaticFileHandler)
     
-    print(f"Frontend server running on http://localhost:{port}")
-    print(f"Backend URL: {BACKEND_HOST}")
-    print(f"Serving files from: {os.getcwd()}")
-    print("Press Ctrl+C to stop the server")
+    logger.info(f"Frontend server starting on http://localhost:{port}")
+    logger.info(f"Backend URL: {BACKEND_HOST}")
+    logger.info(f"Serving files from: {os.getcwd()}")
+    logger.info("Press Ctrl+C to stop the server")
     
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nShutting down server...")
+        logger.info("Shutting down server...")
         httpd.shutdown()
 
 
