@@ -1,0 +1,23 @@
+"""
+Configuration and environment variables.
+"""
+import os
+
+# Database
+DB_HOST = os.getenv("DB_HOST", "nv-service-b48efcd4fbe8cf4a875a2ccb70e0e21b")
+DB_PORT = os.getenv("DB_PORT", "5432")
+DB_NAME = os.getenv("DB_NAME", "nuvolos")
+DB_USER = os.getenv("DB_USER", "nuvolos")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "nuvolos")
+
+# Server
+BACKEND_PORT = int(os.getenv("BACKEND_PORT", "8500"))
+BACKEND_HOST = os.getenv("BACKEND_HOST", "0.0.0.0")
+
+# Retrieval
+EMBEDDING_DIM = 384
+DEFAULT_TOP_K = 3
+MAX_TOP_K = 100
+
+# LLM / Generation
+DEFAULT_FORMAT = "markdown"  # "markdown" | "text"
