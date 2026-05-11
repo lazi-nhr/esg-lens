@@ -254,14 +254,15 @@ def start_servers():
     # Start frontend server
     print(f"Starting frontend server on port {FRONTEND_PORT}...")
     frontend_log = open(FRONTEND_LOG_FILE, 'w')
+    # Construct full backend URL for the frontend proxy
+    backend_url = f"http://{BACKEND_HOST}:{BACKEND_PORT}"
     frontend_process = subprocess.Popen(
         [sys.executable, "server.py"],
         cwd=FRONTEND_DIR,
         stdout=frontend_log,
         stderr=subprocess.STDOUT,
         env={**os.environ, **{
-            "BACKEND_HOST": BACKEND_HOST,
-            "BACKEND_PORT": BACKEND_PORT
+            "BACKEND_HOST": backend_url
         }}
     )
     
