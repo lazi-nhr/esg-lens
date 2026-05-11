@@ -23,7 +23,7 @@ import urllib.error
 # The backend lives on the Nuvolos internal network.  Its hostname is set
 # via the BACKEND_HOST environment variable (provided by Nuvolos or by
 # start_frontend.py).  The browser never sees this URL.
-BACKEND_HOST = os.getenv('BACKEND_HOST', 'http://<your_hostname>:8500')
+BACKEND_HOST = os.getenv('BACKEND_HOST', 'http://localhost:8500')
 if not BACKEND_HOST.startswith('http'):
     BACKEND_HOST = f'http://{BACKEND_HOST}'
 
