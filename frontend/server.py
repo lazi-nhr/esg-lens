@@ -142,6 +142,21 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
             error_response = json.dumps({'error': 'Not found'})
             self.wfile.write(error_response.encode())
 
+    def do_OPTIONS(self):
+        """Handle CORS preflight requests."""
+        path_without_query = self.path.split('?')[0]
+        if (path_without_query.startswith('/documents') or 
+            path_without_query.startswith('/query') or
+            path_without_query.startswith('/evaluate')):
+            self.send_response(200)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+            self.end_headers()
+        else:
+            self.send_response(404)
+            self.end_headers()
+
 
 def run_server(port=None):
     """Run the frontend server."""
