@@ -411,7 +411,12 @@
             typeMarkdownInto(reportOutput, `Generating report for **${companyLabel}** (${criteriaLabel})...`, { charsPerSecond: 60 });
 
             try {
-                const response = await fetch('/evaluate', {
+                // Detect if we're behind Nuvolos proxy and adjust API path accordingly
+                const basePath = window.location.pathname.startsWith('/proxy/') 
+                    ? '/proxy/3000' 
+                    : '';
+                
+                const response = await fetch(basePath + '/evaluate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
