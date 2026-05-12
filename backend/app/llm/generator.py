@@ -64,6 +64,7 @@ Response:"""
     # Call HF Inference API
     api_url = f"https://api-inference.huggingface.co/models/{HF_MODEL}"
     headers = {"Authorization": f"Bearer {HF_API_KEY}"}
+    print(HF_API_KEY)
     payload = {"inputs": prompt, "parameters": {"max_new_tokens": 500}}
     
     try:

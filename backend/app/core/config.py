@@ -27,4 +27,4 @@ MAX_TOP_K = 100
 DEFAULT_FORMAT = "markdown"  # "markdown" | "text"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "huggingface")
 HF_MODEL = os.getenv("HF_MODEL", "google/flan-t5-base")
-HF_API_KEY = os.getenv("HF_API_KEY")  # Required for HF inference API
+HF_API_KEY = os.getenv("HF_API_KEY")  # Required for HF inference APIs
