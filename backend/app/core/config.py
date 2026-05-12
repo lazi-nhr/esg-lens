@@ -2,6 +2,10 @@
 Configuration and environment variables.
 """
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (if it exists)
+load_dotenv()
 
 # Database
 DB_HOST = os.getenv("DB_HOST", "nv-service-b48efcd4fbe8cf4a875a2ccb70e0e21b")

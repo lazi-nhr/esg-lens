@@ -54,3 +54,4 @@ node_modules/
 
 # Env files
 .env
+backend/app/core/.env
