@@ -14,6 +14,7 @@ async def generate_answer(query: str, retrieved_docs: List[Dict]) -> str:
     """
     Generate an answer based on the query and retrieved documents.
     Uses Hugging Face Inference API if configured, otherwise falls back to placeholder.
+    Gracefully falls back to placeholder if API is unavailable.
     
     Args:
         query: The user's question.
@@ -25,11 +26,18 @@ async def generate_answer(query: str, retrieved_docs: List[Dict]) -> str:
         if not retrieved_docs:
             return "No relevant documents found in the database."
 
-        # If HF API is configured, use it
+        # If HF API is configured, try to use it
         if HF_API_KEY and LLM_PROVIDER == "huggingface":
-            return await _call_huggingface_api(query, retrieved_docs)
+            try:
+                return await _call_huggingface_api(query, retrieved_docs)
+            except Exception as hf_error:
+                # HF API failed, fall back to placeholder
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"HF API failed, using placeholder: {hf_error}")
+                return _placeholder_answer(retrieved_docs)
         else:
-            # Fallback: return placeholder answer
+            # No HF API configured, use placeholder
             return _placeholder_answer(retrieved_docs)
     except Exception as e:
         raise GenerationError(f"Error generating answer: {str(e)}")
