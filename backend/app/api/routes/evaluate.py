@@ -1,11 +1,13 @@
 """
 Evaluate endpoint: ESG evaluation with structured report.
 """
+import logging
 from fastapi import APIRouter, HTTPException
 
 from app.api.schemas import EvaluateRequest, EvaluateResponse
 from app.services.evaluate_service import evaluate
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -22,4 +24,5 @@ async def evaluate_esg(request: EvaluateRequest):
         )
         return result
     except Exception as e:
+        logger.error(f"Evaluate error: {type(e).__name__}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
