@@ -1,0 +1,86 @@
+[
+  {
+    "company": "Microsoft",
+    "criterion": "Environment",
+    "query": "Evaluate Microsoft's Environment (E) Summary. Provide a structured ESG report with key findings.",
+    "top_k": 3,
+    "format": "markdown"
+  },
+  {
+    "company": "Microsoft",
+    "criterion": "Social",
+    "query": "Analyze Microsoft's social responsibility programs, employee wellness initiatives, and community impact.",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Microsoft",
+    "criterion": "Governance",
+    "query": "Evaluate Microsoft's corporate governance structure, board composition, and executive compensation practices.",
+    "top_k": 3,
+    "format": "markdown"
+  },
+  {
+    "company": "Apple",
+    "criterion": "Environment",
+    "query": "What are Apple's key environmental initiatives, carbon reduction targets, and renewable energy usage?",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Apple",
+    "criterion": "Social",
+    "query": "Analyze Apple's labor practices, supply chain management, and diversity and inclusion programs.",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Apple",
+    "criterion": "Governance",
+    "query": "Evaluate Apple's board of directors, executive leadership, and corporate governance policies.",
+    "top_k": 3,
+    "format": "markdown"
+  },
+  {
+    "company": "Tesla",
+    "criterion": "Environment",
+    "query": "Assess Tesla's environmental performance, clean energy impact, and sustainability practices.",
+    "top_k": 5,
+    "format": "markdown"
+  },
+  {
+    "company": "Tesla",
+    "criterion": "Social",
+    "query": "Review Tesla's workplace culture, employee safety record, and community engagement.",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Tesla",
+    "criterion": "Governance",
+    "query": "Analyze Tesla's management structure, board independence, and corporate accountability.",
+    "top_k": 3,
+    "format": "markdown"
+  },
+  {
+    "company": "Google",
+    "criterion": "Environment",
+    "query": "Evaluate Google's environmental strategy, carbon neutrality goals, and data center efficiency.",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Google",
+    "criterion": "Social",
+    "query": "Analyze Google's diversity initiatives, employee benefits, and technology for social good programs.",
+    "top_k": 4,
+    "format": "markdown"
+  },
+  {
+    "company": "Google",
+    "criterion": "Governance",
+    "query": "Evaluate Google's governance framework, leadership team, and executive compensation.",
+    "top_k": 3,
+    "format": "markdown"
+  }
+]

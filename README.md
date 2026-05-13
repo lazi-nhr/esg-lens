@@ -1,7 +1,75 @@
-# nuvolos-examples-rag
+# esg rag system
 
-A minimal Retrieval Augmented Generation (RAG) example running on Nuvolos.
-Demonstrates how a frontend, backend, and database communicate over an internal network.
+A Retrieval Augmented Generation (RAG) system for ESG Reporting.
+
+## Quick start
+
+### 1. Start the database
+
+Just start the database app. You might need to connect to it from another container to set up your DB schema, or you might you an ORM and a migrator (such as sqlalchemy and alembic in python or prisma for nodejs/typescript for example).
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2a. Full Stack Running
+
+```bash
+cd /path/to/esg-reporting-rag-system  # navigate to project root
+
+python setup.py                       # checks DB, loads sample data, starts both servers
+
+python cleanup.py                     # stops servers, clears documents, removes logs
+```
+
+(Bash equivalents: `./setup.sh` / `./cleanup.sh`)
+
+### 2b. Backend Running
+
+In the backend app:
+
+```bash
+cd backend                  # navigate to backend root
+
+python main.py              # starts on port 8500
+# or
+python start_backend.py     # checks DB, starts FastAPI on port 8500
+
+python stop_backend.py      # stops server
+```
+
+
+### 2c. Frontend Running
+
+In the frontend app:
+
+```bash
+cd frontend
+
+python start_frontend.py    # starts reverse-proxy server on port 3000
+
+python stop_frontend.py     # stops server
+```
+
+### 3. Open Frontend
+
+Open the VS Code Server URL for port 3000 in your browser.
+
+1. In the bottom panel of your VS Code interface (where you see the Terminal), look for a tab labeled Ports.
+
+2. Look for the row where the Port is 3000.
+
+3. Click the link in the "Forwarded Address" column.
+
+
+### 4. View logs
+
+```bash
+tail -f /tmp/backend.log
+tail -f /tmp/frontend.log
+```
 
 ## How networking works on Nuvolos
 
@@ -57,62 +125,6 @@ resolve or reach it. So the frontend server accepts the API request from the
 browser and forwards it to the backend over the internal network. This is
 exactly what tools like Nginx and API gateways do in production.
 
-## Quick start
-
-### 1. Start the database
-
-Just start the database app. You might need to connect to it from another container to set up your DB schema, or you might you an ORM and a migrator (such as sqlalchemy and alembic in python or prisma for nodejs/typescript for example).
-
-
-### 2. Start the backend
-
-In the backend app:
-
-```bash
-cd backend
-python3 start_backend.py     # checks DB, starts FastAPI on port 8500
-```
-
-### 3. Start the frontend
-
-In the frontend app:
-
-```bash
-cd frontend
-python3 start_frontend.py    # starts reverse-proxy server on port 3000
-```
-
-Open the VS Code Server URL for port 3000 in your browser.
-
-1. In the bottom panel of your VS Code interface (where you see the Terminal), look for a tab labeled Ports.
-
-2. Look for the row where the Port is 3000.
-
-3. Click the link in the "Forwarded Address" column.
-
-### 3. Stop everything
-
-```bash
-cd backend  && python3 stop_backend.py
-cd frontend && python3 stop_frontend.py
-```
-
-### Full-stack shortcut
-
-```bash
-python3 setup.py     # checks DB, loads sample data, starts both servers
-python3 cleanup.py   # stops servers, clears documents, removes logs
-```
-
-(Bash equivalents: `./setup.sh` / `./cleanup.sh`)
-
-### View logs
-
-```bash
-tail -f /tmp/backend.log
-tail -f /tmp/frontend.log
-```
-
 ## How the pieces fit together
 
 | Component | Port | Hostname | Role |
@@ -139,6 +151,7 @@ The frontend decides what to proxy based on the URL path:
 | POST   | `/documents`| Add a document           |
 | GET    | `/documents`| List all documents       |
 | POST   | `/query`    | Vector-similarity search |
+| EVALUATE | `/evaluate` | Run RAG evaluation     |
 
 Test from the terminal (inside the backend pod, or any pod on the same subnet):
 
@@ -159,6 +172,7 @@ curl -X POST http://localhost:8500/query \
 ```
 .
 ├── backend/
+│   ├── app/
 │   ├── main.py              # FastAPI app (documents + vector search)
 │   ├── requirements.txt
 │   ├── start_backend.py     # Start script (checks DB, launches server)
