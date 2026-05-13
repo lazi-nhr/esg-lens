@@ -9,6 +9,18 @@ from app.db.connection import init_db, get_db_connection
 from app.db.repositories.documents_repo import DocumentRepository
 from app.retrieval.embedder import create_embedding
 from app.db.chunker import chunk_document
+from PyPDF2 import PdfReader
+import nltk
+
+
+def setup_nltk():
+    """Download required NLTK data."""
+    try:
+        nltk.data.find("tokenizers/punkt_tab")
+    except LookupError:
+        print("Downloading NLTK punkt_tab tokenizer...")
+        nltk.download("punkt_tab", quiet=True)
+
 
 # Data folder path
 DATA_DIR = Path(__file__).parent.parent.parent / "data" / "raw_pdfs"
@@ -16,6 +28,9 @@ DATA_DIR = Path(__file__).parent.parent.parent / "data" / "raw_pdfs"
 
 def seed_database():
     """Load all PDFs from data folder into database."""
+    # Setup NLTK first
+    setup_nltk()
+    
     print("Initializing database...")
     init_db()
     print("✅ Database initialized\n")
@@ -28,12 +43,6 @@ def seed_database():
         return
     
     print(f"Loading {len(pdf_files)} PDF(s) from {DATA_DIR}...\n")
-    
-    try:
-        from PyPDF2 import PdfReader
-    except ImportError:
-        print("❌ PyPDF2 not installed. Install with: pip install PyPDF2")
-        return
     
     conn = get_db_connection()
     try:
