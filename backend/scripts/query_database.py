@@ -273,7 +273,7 @@ def main():
         epilog="""
 Examples:
   # Vector similarity search
-  python query_database.py --vector "Microsoft climate change initiatives"
+  python query_database.py --vector "ABB climate change initiatives"
 
   # Full-text search
   python query_database.py --text "carbon emissions reduction"
