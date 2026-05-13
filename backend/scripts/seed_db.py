@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.db.connection import init_db, get_db_connection
-from app.db.repositories.documents_repo import DocumentsRepository
+from app.db.repositories.documents_repo import DocumentRepository
 from app.retrieval.embedder import create_embedding
 from app.db.chunker import chunk_document
 
@@ -63,7 +63,7 @@ def seed_database():
                     content = chunk.get("text", "")
                     if content.strip():
                         embedding = create_embedding(content)
-                        doc_id_inserted = DocumentsRepository.add(content, embedding)
+                        doc_id_inserted = DocumentRepository.add(content, embedding)
                         total_chunks += 1
                 
                 print(f"    ✓ Loaded {len(reader.pages)} pages, {len(chunks)} chunks")
