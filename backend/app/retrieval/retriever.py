@@ -7,22 +7,23 @@ from typing import Callable
 
 
 class Retriever:
-    def __init__(self, faiss_indexer=None):
+    def __init__(self, faiss_indexer=None, tokenizer: Callable[[str], List[str]] = lambda x: x.split()):
         self.faiss = faiss_indexer
         self.bm25 = None
         self.corpus_texts: List[str] = []
         self.chunk_ids: List[str] = []
+        self.tokenizer: Callable[[str], List[str]] = tokenizer
 
-    def build_bm25(self, texts: List[str], chunk_ids: List[str], tokenizer: Callable[[str], List[str]] = lambda x: x.split()):
-        tokenized = [tokenizer(t) for t in texts]
+    def build_bm25(self, texts: List[str], chunk_ids: List[str]):
+        tokenized = [self.tokenizer(t) for t in texts]
         self.bm25 = BM25Okapi(tokenized)
         self.corpus_texts = texts
         self.chunk_ids = chunk_ids
 
-    def bm25_query(self, query: str, top_n: int = 100, tokenizer: Callable[[str], List[str]] = lambda x: x.split()):
+    def bm25_query(self, query: str, top_n: int = 100):
         if self.bm25 is None:
             raise RuntimeError("BM25 not built")
-        qtok = tokenizer(query)
+        qtok = self.tokenizer(query)
         scores = self.bm25.get_scores(qtok)
         ranked = sorted(enumerate(scores), key=lambda x: x[1], reverse=True)[:top_n]
         # return list of (chunk_id, score)
