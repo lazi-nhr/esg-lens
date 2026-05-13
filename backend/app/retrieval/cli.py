@@ -1,11 +1,11 @@
 """Simple CLI for indexing and querying."""
 import argparse
 import os
-from backend.parser import parse_pdf_to_doc
-from backend.chunker import chunk_document, build_parent_chunks
-from backend.store import MongoStore
-from backend.indexer import FaissIndexer
-from backend.retriever import Retriever
+from backend.app.db.parser import parse_pdf_to_doc
+from backend.app.db.chunker import chunk_document, build_parent_chunks
+from backend.app.db.store import MongoStore
+from backend.app.db.indexer import FaissIndexer
+from backend.app.retrieval.retriever import Retriever
 from typing import List
 
 
