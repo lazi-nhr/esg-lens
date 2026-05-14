@@ -11,6 +11,8 @@ Just start the database app. You might need to connect to it from another contai
 ### 2. Install dependencies
 
 ```bash
+cd backend                 # navigate to backend root
+
 pip install -r requirements.txt
 ```
 
