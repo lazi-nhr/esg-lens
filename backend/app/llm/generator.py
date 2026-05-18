@@ -2,11 +2,13 @@ from typing import List, Dict
 import logging
 import os
 
+from app.core.config import HF_MODEL, HF_API_KEY, HF_HOME
+
 logger = logging.getLogger(__name__)
 
 # 1. Update the model target
-MODEL_NAME = os.environ.get("LOCAL_LLM_MODEL", "Qwen/Qwen2.5-1.5B-Instruct")
-CACHE_DIR = os.environ.get("HF_HOME", "/files/.hf_cache")
+MODEL_NAME = HF_MODEL
+CACHE_DIR = HF_HOME
 _model = None
 _tokenizer = None
 

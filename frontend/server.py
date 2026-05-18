@@ -20,6 +20,12 @@ import urllib.request
 import urllib.error
 import logging
 
+
+# -- Activate .env variables from .env file (if it exists) ---
+from dotenv import load_dotenv
+load_dotenv()
+
+
 # ── Logging configuration ─────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,

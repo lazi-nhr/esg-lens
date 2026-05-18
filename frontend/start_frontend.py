@@ -12,6 +12,10 @@ import time
 import subprocess
 from pathlib import Path
 
+# Load environment variables from .env file (if it exists)
+from dotenv import load_dotenv
+load_dotenv()
+
 # Colors for output
 GREEN = '\033[0;32m'
 YELLOW = '\033[1;33m'
@@ -57,7 +61,7 @@ def check_if_running():
             # Check if process is actually running
             os.kill(pid, 0)
             print_error(f"Frontend server is already running (PID: {pid})")
-            print(f"To stop it, run: python3 stop_frontend.py")
+            print("To stop it, run: python3 stop_frontend.py")
             return True
         except (OSError, ValueError):
             # Process not running, clean up stale PID file

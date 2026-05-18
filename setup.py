@@ -18,6 +18,10 @@ import requests
 import psycopg2
 from pathlib import Path
 
+# Load environment variables from .env file (if it exists)
+from dotenv import load_dotenv
+load_dotenv()
+
 # Colors for output
 GREEN = '\033[0;32m'
 YELLOW = '\033[1;33m'
