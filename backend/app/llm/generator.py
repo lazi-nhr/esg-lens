@@ -20,10 +20,21 @@ def _get_model():
         _model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME, 
             cache_dir=CACHE_DIR, 
-            device_map="auto", # automatically use GPU if available
+            device_map="auto",  # automatically selects device (GPU or CPU)
             torch_dtype="auto"
         )
-        logger.info("Model ready.")
+        
+        # Log device information
+        if hasattr(_model, 'device'):
+            logger.info(f"Model loaded on device: {_model.device}")
+        else:
+            # For models with multiple devices
+            devices = set()
+            for param in _model.parameters():
+                devices.add(str(param.device))
+            logger.info(f"Model loaded on devices: {devices}")
+        
+        logger.info(f"Model ready. Parameters: {_model.num_parameters():,}")
     return _model, _tokenizer
 
 async def generate_answer(query: str, retrieved_docs: List[Dict]) -> str:
