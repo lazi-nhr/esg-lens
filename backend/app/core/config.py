@@ -23,6 +23,7 @@ BACKEND_URL = os.getenv("BACKEND_URL", "localhost")
 
 # Retrieval
 EMBEDDING_DIM = int(os.getenv("EMBEDDING_DIM", "768"))
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5")
 DEFAULT_TOP_K = int(os.getenv("DEFAULT_TOP_K", "10"))
 MAX_TOP_K = int(os.getenv("MAX_TOP_K", "100"))
 

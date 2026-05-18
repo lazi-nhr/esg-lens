@@ -2,11 +2,11 @@
 Embedding function: convert text to vector representation using sentence-transformers.
 """
 import os
-from app.core.config import EMBEDDING_DIM
+from app.core.config import EMBEDDING_DIM, EMBEDDING_MODEL
 
 _model = None
 # Dynamically grab the model from environment variables, defaulting to BGE
-MODEL_NAME = os.environ.get("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5")
+MODEL_NAME = EMBEDDING_MODEL
 
 def _get_model():
     """Load sentence-transformers model (lazy loading)."""
