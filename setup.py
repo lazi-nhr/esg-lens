@@ -11,9 +11,7 @@ import os
 import sys
 import time
 import csv
-import json
 import subprocess
-import signal
 import requests
 import psycopg2
 from pathlib import Path
@@ -62,6 +60,41 @@ def print_colored(color, message):
 def print_header(message):
     """Print section header."""
     print_colored(YELLOW, f"\n{message}")
+
+
+def build_backend_url(url_or_host, port, include_scheme=True):
+    """Build properly formatted backend URL from host/port.
+    
+    Args:
+        url_or_host: Can be 'localhost', 'hostname:port', 'http://hostname', etc.
+        port: Port number to use if not already in url_or_host
+        include_scheme: If True, returns 'http://host:port', else just 'host:port'
+    
+    Returns:
+        Properly formatted URL or host:port string
+    """
+    # Check if it already has a scheme
+    if url_or_host.startswith("http://") or url_or_host.startswith("https://"):
+        # Remove scheme to extract just host:port
+        scheme_end = url_or_host.find("://") + 3
+        host_part = url_or_host[scheme_end:]
+    else:
+        host_part = url_or_host
+    
+    # Check if port is already in the host part
+    if ":" in host_part:
+        # Port already included
+        base = host_part
+    else:
+        # Need to add port
+        base = f"{host_part}:{port}"
+    
+    # Add scheme if requested
+    if include_scheme:
+        if not base.startswith("http://"):
+            base = f"http://{base}"
+    
+    return base
 
 
 def print_success(message):
@@ -124,7 +157,8 @@ def get_document_count():
 def wait_for_backend(timeout=60):
     """Wait for backend to be ready."""
     print("Waiting for backend to be ready...")
-    backend_url = f"http://{BACKEND_URL}:{BACKEND_PORT}/health"
+    base_url = build_backend_url(BACKEND_URL, BACKEND_PORT, include_scheme=True)
+    backend_url = f"{base_url}/health"
     
     for i in range(timeout):
         try:
@@ -185,7 +219,7 @@ def load_sample_data():
     
     # Read and load each document from CSV
     doc_count = 0
-    backend_url = f"http://{BACKEND_URL}:{BACKEND_PORT}/documents"
+    backend_url = f"{build_backend_url(BACKEND_URL, BACKEND_PORT, include_scheme=True)}/documents"
     
     try:
         with open(SAMPLE_DATA_FILE, 'r', encoding='utf-8') as f:
@@ -262,15 +296,15 @@ def start_servers():
     # Start frontend server
     print(f"Starting frontend server on port {FRONTEND_PORT}...")
     frontend_log = open(FRONTEND_LOG_FILE, 'w')
-    # Construct full backend URL for the frontend proxy
-    backend_full_url = f"http://{BACKEND_URL}:{BACKEND_PORT}"
+    # Frontend needs hostname:port without scheme for the reverse proxy
+    backend_host_port = build_backend_url(BACKEND_URL, BACKEND_PORT, include_scheme=False)
     frontend_process = subprocess.Popen(
         [sys.executable, "server.py"],
         cwd=FRONTEND_DIR,
         stdout=frontend_log,
         stderr=subprocess.STDOUT,
         env={**os.environ, **{
-            "BACKEND_URL": backend_full_url
+            "BACKEND_URL": backend_host_port
         }}
     )
     
@@ -317,8 +351,9 @@ def main():
     
     # Success message
     print_colored(GREEN, "\n=== Setup Complete! ===\n")
-    print(f"Backend API: http://{BACKEND_URL}:{BACKEND_PORT}")
-    print(f"API Documentation: http://{BACKEND_URL}:{BACKEND_PORT}/docs")
+    api_url = build_backend_url(BACKEND_URL, BACKEND_PORT, include_scheme=True)
+    print(f"Backend API: {api_url}")
+    print(f"API Documentation: {api_url}/docs")
     print(f"Frontend UI: http://localhost:{FRONTEND_PORT}")
     print()
     print(f"Backend logs: tail -f {BACKEND_LOG_FILE}")
