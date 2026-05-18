@@ -1,8 +1,7 @@
 """
 Embedding function: convert text to vector representation using sentence-transformers.
 """
-import os
-from app.core.config import EMBEDDING_DIM, EMBEDDING_MODEL
+from app.core.config import EMBEDDING_DIM, EMBEDDING_MODEL, HF_API_KEY
 
 _model = None
 # Dynamically grab the model from environment variables
@@ -13,6 +12,15 @@ def _get_model():
     global _model
     if _model is None:
         from sentence_transformers import SentenceTransformer
+        
+        # Authenticate with Hugging Face Hub if API key is available
+        if HF_API_KEY and HF_API_KEY.startswith("hf_"):
+            try:
+                from huggingface_hub import login
+                login(token=HF_API_KEY, add_to_git_credential=False)
+            except Exception as e:
+                print(f"Warning: Could not authenticate with HF_API_KEY: {e}")
+        
         _model = SentenceTransformer(MODEL_NAME)
     return _model
 
