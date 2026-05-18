@@ -107,6 +107,20 @@ def print_error(message):
     print_colored(RED, f"✗ {message}")
 
 
+def is_port_free(port, host='0.0.0.0', timeout=1):
+    """Check if a port is available for binding."""
+    import socket
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(timeout)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        # If connect_ex returns 0, port is in use; non-zero means port is free
+        return result != 0
+    except Exception:
+        return False
+
+
 def check_database_connection():
     """Check if database is accessible."""
     print_header("Step 1: Checking database connection...")
@@ -259,9 +273,19 @@ def load_sample_data():
     except subprocess.TimeoutExpired:
         backend_process.kill()
     backend_log.close()
-    # Wait for port to be fully released (TIME_WAIT can take a few seconds)
+    
+    # Wait for port to be fully released
     print("Waiting for port to be released...")
-    time.sleep(10)
+    for i in range(30):  # Wait up to 30 seconds
+        if is_port_free(int(BACKEND_PORT)):
+            print_success(f"Port {BACKEND_PORT} is now free")
+            break
+        if i % 5 == 0:
+            print(f"  Still waiting ({i}s)...")
+        time.sleep(1)
+    else:
+        print_error(f"Port {BACKEND_PORT} did not become free after 30 seconds")
+        return False
     
     return True
 
