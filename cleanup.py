@@ -64,7 +64,7 @@ def stop_process(pid_file, process_name):
         try:
             pid = int(pid_file.read_text().strip())
             print(f"Stopping {process_name} (PID: {pid})...")
-            
+
             # Check if process exists
             try:
                 os.kill(pid, 0)  # Signal 0 just checks if process exists
