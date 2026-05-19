@@ -12,9 +12,20 @@ from app.db.repositories.documents_repo import DocumentRepository
 from app.retrieval.embedder import create_embedding
 from app.db.chunker import chunk_document
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Setup logging - both console and file
+log_file = Path(__file__).parent.parent.parent / "data" / "seed_db.log"
+log_file.parent.mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler()  # Also print to console
+    ]
+)
 logger = logging.getLogger(__name__)
+logger.info(f"Logging to: {log_file}")
 
 # Data folder paths
 DATA_DIR = Path(__file__).parent.parent.parent / "data" / "raw_pdfs"
