@@ -105,7 +105,7 @@ def seed_database():
                 for chunk in chunks:
                     content = chunk.get("text", "")
                     if content.strip():
-                        logger.debug(f"  Creating embedding for chunk...")
+                        logger.debug("  Creating embedding for chunk...")
                         embedding = create_embedding(content)
                         DocumentRepository.add(content, embedding)
                         chunks_inserted += 1
@@ -122,7 +122,7 @@ def seed_database():
                 failed += 1
                 continue
         
-        logger.info(f"\n✅ Seeding complete:")
+        logger.info("\n✅ Seeding complete:")
         logger.info(f"   • Successful: {successful}")
         logger.info(f"   • Failed: {failed}")
         logger.info(f"   • Total chunks indexed: {total_chunks}")
