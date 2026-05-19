@@ -49,8 +49,12 @@ let currentMarkdownReport = ""; // Stores the raw text for the PDF
 let activeTypingTimer = null;
 
 function renderMarkdownInto(element, markdownText) {
-    const html = window.marked ? window.marked.parse(markdownText, { breaks: true }) : markdownText;
-    element.innerHTML = window.DOMPurify ? window.DOMPurify.sanitize(html) : html;
+    try {
+        const html = window.marked ? window.marked.parse(markdownText, { breaks: true }) : markdownText;
+        element.innerHTML = window.DOMPurify ? window.DOMPurify.sanitize(html) : html;
+    } catch (err) {
+        console.error("Error rendering markdown:", err);
+    }
 }
 
 function typeMarkdownInto(element, markdownText, options = {}) {
@@ -69,16 +73,27 @@ function typeMarkdownInto(element, markdownText, options = {}) {
     let tick = 0;
 
     renderMarkdownInto(element, '');
+    console.log(`[Animation Start] Text length: ${markdownText.length}, charsPerTick: ${charsPerTick}`);
 
     activeTypingTimer = setInterval(() => {
-        index = Math.min(markdownText.length, index + charsPerTick);
-        tick += 1;
+        try {
+            index = Math.min(markdownText.length, index + charsPerTick);
+            tick += 1;
 
-        if (tick % renderEveryTicks === 0 || index >= markdownText.length) {
-            renderMarkdownInto(element, markdownText.slice(0, index));
-        }
+            if (tick % renderEveryTicks === 0 || index >= markdownText.length) {
+                renderMarkdownInto(element, markdownText.slice(0, index));
+                if (tick % 10 === 0) {
+                    console.log(`[Animation Progress] ${index}/${markdownText.length} chars`);
+                }
+            }
 
-        if (index >= markdownText.length) {
+            if (index >= markdownText.length) {
+                clearInterval(activeTypingTimer);
+                activeTypingTimer = null;
+                console.log('[Animation Complete]');
+            }
+        } catch (err) {
+            console.error("Error in animation loop:", err);
             clearInterval(activeTypingTimer);
             activeTypingTimer = null;
         }
