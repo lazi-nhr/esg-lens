@@ -152,7 +152,7 @@ body.dark-mode button.theme-toggle:hover {
 /* --- Form Elements --- */
 .eval-row {
     display: flex;
-    gap: 15px;
+    gap: 8px;
     align-items: flex-end;
     flex-wrap: wrap;
 }
@@ -372,7 +372,7 @@ button.download-btn svg {
     }
 
     .eval-row {
-        gap: 12px;
+        gap: 6px;
     }
 
     .eval-row .form-group {
@@ -455,7 +455,7 @@ button.download-btn svg {
     /* Stack all form elements vertically */
     .eval-row {
         flex-direction: column;
-        gap: 10px;
+        gap: 6px;
         align-items: stretch;
     }
 
