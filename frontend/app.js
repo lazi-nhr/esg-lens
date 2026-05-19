@@ -76,7 +76,6 @@ function typeMarkdownInto(element, markdownText, options = {}) {
 
         if (tick % renderEveryTicks === 0 || index >= markdownText.length) {
             renderMarkdownInto(element, markdownText.slice(0, index));
-            element.scrollTop = element.scrollHeight;
         }
 
         if (index >= markdownText.length) {
