@@ -6,27 +6,34 @@
 
 /* 1. Light Mode Variables */
 :root {
-    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --card-bg: white;
-    --text-main: #333;
+    /* Primary: Deep Slate Blue | Accent: Sage Green | Surface: Off-White | Text: Charcoal */
+    --primary: #1E3A5F;
+    --accent: #5D8C7B;
+    --surface: #F8F9FA;
+    --text-main: #2D3436;
     --text-muted: #555;
-    --border-color: black; 
-    --input-bg: #f0f0f0;
-    --report-bg: #f0f0f0; 
+    --bg-gradient: linear-gradient(135deg, #1E3A5F 0%, #3d5a7f 100%);
+    --card-bg: white;
+    --border-color: #E0E0E0;
+    --input-bg: #F8F9FA;
+    --report-bg: #F8F9FA;
     --code-bg: white;
 }
 
 /* 2. Dark Mode Variables */
 body.dark-mode {
     color-scheme: dark; /* Native dark mode for scrollbars and dropdowns! */
-    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --card-bg: black;
-    --text-main: white;
-    --text-muted: #cbd5e0;
-    --border-color: white; 
-    --input-bg: #1a202c;
-    --report-bg: #1a202c;
-    --code-bg: #2d3748;
+    --primary: #2D5A8C;
+    --accent: #7BA896;
+    --surface: #1A1F26;
+    --text-main: #F0F1F3;
+    --text-muted: #A0A5B0;
+    --bg-gradient: linear-gradient(135deg, #1A2F4C 0%, #2D5A8C 100%);
+    --card-bg: #242A33;
+    --border-color: #3A3F47;
+    --input-bg: #1A1F26;
+    --report-bg: #1A1F26;
+    --code-bg: #2D3748;
 }
 
 body {
@@ -72,22 +79,27 @@ button.theme-toggle {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    border: none;
+    border: 2px solid var(--accent);
     transition: transform 0.2s, background-color 0.3s, color 0.3s;
     
-    /* Light Mode Colors (Black Button, White Text) */
-    background: black;
+    /* Light Mode Colors */
+    background: var(--primary);
     color: white;
 }
 
 button.theme-toggle:hover {
-    transform: translateY(-2px); /* Gives it that nice "lift" effect */
+    transform: translateY(-2px);
+    background: var(--accent);
 }
 
-/* Dark Mode Colors (White Button, Black Text) */
+/* Dark Mode Colors */
 body.dark-mode button.theme-toggle {
-    background: white;
-    color: black;
+    background: var(--primary);
+    color: white;
+}
+
+body.dark-mode button.theme-toggle:hover {
+    background: var(--accent);
 }
 
 /* --- Main Layout --- */
@@ -165,20 +177,22 @@ option {
 
 /* --- Evaluate Button --- */
 button.primary-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     color: white;
     border: none;
     padding: 12px 30px;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.3s;
     width: 100%;
     font-weight: 600;
+    box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);
 }
 
 button.primary-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 58, 95, 0.4);
 }
 
 @media (max-width: 768px) {
