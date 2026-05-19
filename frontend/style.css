@@ -54,16 +54,42 @@ body {
     text-align: center;
     color: white;
     margin-bottom: 40px;
+    position: relative;
 }
 
-.header h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
+/* Logo styling - easy to change */
+.header .logo {
+    max-width: 400px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.header p {
-    font-size: 1.2em;
-    opacity: 0.9;
+/* SVG logo element colors - Leaf: Sage Green | Text: Deep Slate Blue */
+#leaf-outer,
+#leaf-stem,
+#leaf-vein-1,
+#leaf-vein-2 {
+    stroke: #5D8C7B !important; /* Sage Green for leaf */
+}
+
+#logo-text {
+    fill: #1E3A5F !important; /* Deep Slate Blue for text */
+}
+
+/* Dark mode: lighten text for visibility */
+body.dark-mode #logo-text {
+    fill: #F0F1F3 !important;
+}
+
+/* Dark mode: leaf stays same color (good contrast) */
+body.dark-mode #leaf-outer,
+body.dark-mode #leaf-stem,
+body.dark-mode #leaf-vein-1,
+body.dark-mode #leaf-vein-2 {
+    stroke: #5D8C7B !important;
 }
 
 /* --- Theme Toggle Switch --- */
