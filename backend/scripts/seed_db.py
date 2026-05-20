@@ -3,6 +3,7 @@ import sys
 import shutil
 from pathlib import Path
 import logging
+from tqdm import tqdm
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -124,8 +125,11 @@ def seed_database():
     try:
         total_chunks = 0
         
-        for pdf_path in pdf_files:
-            logger.info(f"Processing {pdf_path.name}...")
+        # Progress bar for PDF processing
+        pbar = tqdm(pdf_files, desc="Processing PDFs", unit="file", colour="green")
+        
+        for pdf_path in pbar:
+            pbar.set_description(f"Processing: {pdf_path.name[:40]}")
             
             try:
                 # Parse filename to extract metadata
@@ -150,17 +154,20 @@ def seed_database():
                 )
                 logger.debug(f"  Created {len(chunks)} chunks")
                 
-                # Insert chunks into database
+                # Insert chunks into database with progress bar
                 chunks_inserted = 0
-                for chunk in chunks:
+                chunk_pbar = tqdm(chunks, desc="  Embedding chunks", unit="chunk", leave=False, colour="blue")
+                
+                for chunk in chunk_pbar:
                     content = chunk.get("text", "")
                     if content.strip():
-                        logger.debug("  Creating embedding for chunk...")
                         embedding = create_embedding(content)
                         DocumentRepository.add(content, embedding, company, report_title, year)
                         chunks_inserted += 1
                         total_chunks += 1
                 
+                pbar.update()
+                pbar.set_description(f"✓ {pdf_path.name[:40]}")
                 logger.info(f"  ✓ Loaded {len(reader.pages)} pages, {chunks_inserted} chunks inserted")
                 
                 # Move to processed folder

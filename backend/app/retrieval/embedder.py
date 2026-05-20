@@ -39,7 +39,7 @@ def create_embedding(text: str, is_query: bool = False) -> str:
         encode_text = text
 
     model = _get_model()
-    embedding = model.encode(encode_text, convert_to_tensor=False)
+    embedding = model.encode(encode_text, convert_to_tensor=False, show_progress_bar=False)
     embedding_list = embedding.tolist()
     
     return "[" + ",".join(map(str, embedding_list)) + "]"
