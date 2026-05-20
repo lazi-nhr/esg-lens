@@ -11,7 +11,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from app.db.connection import init_db, get_db_connection
 from app.db.repositories.documents_repo import DocumentRepository
 from app.retrieval.embedder import create_embedding
-from app.db.chunker import chunk_document
+from app.db.semantic_chunker import semantic_chunk_document
+from app.core.config import SEMANTIC_SIMILARITY_THRESHOLD, MIN_CHUNK_TOKENS, MAX_CHUNK_TOKENS
 
 # Setup logging - both console and file
 log_file = Path(__file__).parent.parent.parent / "data" / "seed_db.log"
@@ -145,14 +146,16 @@ def seed_database():
                 # Generate doc_id from filename
                 doc_id = pdf_path.stem
                 
-                # Chunk the document using NLTK-based chunker
-                chunks = chunk_document(
+                # Chunk the document using semantic chunking
+                chunks = semantic_chunk_document(
                     page_texts,
                     doc_id,
-                    base_tokens=384,
-                    overlap_tokens=64
+                    embedding_fn=create_embedding,
+                    similarity_threshold=SEMANTIC_SIMILARITY_THRESHOLD,
+                    min_chunk_tokens=MIN_CHUNK_TOKENS,
+                    max_chunk_tokens=MAX_CHUNK_TOKENS
                 )
-                logger.debug(f"  Created {len(chunks)} chunks")
+                logger.debug(f"  Created {len(chunks)} semantic chunks")
                 
                 # Insert chunks into database with progress bar
                 chunks_inserted = 0
@@ -161,10 +164,13 @@ def seed_database():
                 for chunk in chunk_pbar:
                     content = chunk.get("text", "")
                     if content.strip():
-                        embedding = create_embedding(content)
-                        DocumentRepository.add(content, embedding, company, report_title, year)
-                        chunks_inserted += 1
-                        total_chunks += 1
+                        # Remove NUL bytes that can't be stored in PostgreSQL TEXT
+                        content = content.replace("\x00", "")
+                        if content.strip():  # Re-check after cleaning
+                            embedding = create_embedding(content)
+                            DocumentRepository.add(content, embedding, company, report_title, year)
+                            chunks_inserted += 1
+                            total_chunks += 1
                 
                 pbar.update()
                 pbar.set_description(f"✓ {pdf_path.name[:40]}")

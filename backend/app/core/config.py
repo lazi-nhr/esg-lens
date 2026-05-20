@@ -27,6 +27,11 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-base-en-v1.5")
 DEFAULT_TOP_K = int(os.getenv("DEFAULT_TOP_K", "10"))
 MAX_TOP_K = int(os.getenv("MAX_TOP_K", "100"))
 
+# Chunking
+SEMANTIC_SIMILARITY_THRESHOLD = float(os.getenv("SEMANTIC_SIMILARITY_THRESHOLD", "0.5"))
+MIN_CHUNK_TOKENS = int(os.getenv("MIN_CHUNK_TOKENS", "100"))
+MAX_CHUNK_TOKENS = int(os.getenv("MAX_CHUNK_TOKENS", "800"))
+
 # LLM / Generation
 DEFAULT_FORMAT = "markdown"  # "markdown" | "text"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "huggingface")
