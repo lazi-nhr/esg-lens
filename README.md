@@ -73,6 +73,15 @@ tail -f /tmp/backend.log
 tail -f /tmp/frontend.log
 ```
 
+
+### 5. View GPU usage (if applicable)
+
+```bash
+watch -n 1 nvidia-smi
+```
+
+
+
 ## How networking works on Nuvolos
 
 Nuvolos runs your applications as **pods** inside Kubernetes. You don't manage

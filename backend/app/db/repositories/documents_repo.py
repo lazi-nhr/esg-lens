@@ -93,3 +93,23 @@ class DocumentRepository:
             if conn:
                 cur.close()
                 conn.close()
+
+    @staticmethod
+    def get_distinct_companies() -> List[str]:
+        """Retrieve all distinct companies in the database.
+        
+        Returns: Sorted list of company names.
+        """
+        conn = None
+        try:
+            conn = get_db_connection()
+            cur = conn.cursor()
+            cur.execute("SELECT DISTINCT company FROM documents WHERE company IS NOT NULL ORDER BY company;")
+            results = cur.fetchall()
+            return [row["company"] for row in results]
+        except Exception as e:
+            raise DatabaseError(f"Error retrieving distinct companies: {str(e)}")
+        finally:
+            if conn:
+                cur.close()
+                conn.close()

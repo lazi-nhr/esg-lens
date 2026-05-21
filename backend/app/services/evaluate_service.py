@@ -10,6 +10,7 @@ from app.llm.generator import generate_answer
 from app.formatting.query_renderer import build_enriched_query
 from app.formatting.report_renderer import format_report_markdown, format_report_text
 from app.core.config import DEFAULT_TOP_K, DEFAULT_FORMAT
+from app.api.routes.criteria import get_criterion_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -38,14 +39,28 @@ async def evaluate(
     logger.debug(f"Raw query: {query}")
     
     try:
-        # Build enriched query for vector search
-        enriched_query = build_enriched_query(company, criterion, query)
-        logger.debug(f"Enriched query: {enriched_query}")
+        # Load criterion metadata
+        criterion_config = get_criterion_by_id(criterion)
+        if not criterion_config:
+            raise ValueError(f"Unknown criterion: {criterion}")
+        
+        logger.info(f"Criterion: {criterion_config['name']} | Output format: {criterion_config.get('output_format', 'narrative')}")
+        logger.debug(f"Criterion instructions: {criterion_config.get('context_instructions', 'N/A')}")
+        
+        # Use criterion's predefined question with company context
+        criterion_question = criterion_config.get('question', '')
+        enriched_query = f"{criterion_question}\n\nCompany focus: {company}"
+        
+        # Fallback to old method if criterion question is missing
+        if not criterion_question:
+            enriched_query = build_enriched_query(company, criterion, query)
+        
+        logger.debug(f"Query for vector search: {enriched_query[:200]}..." if len(enriched_query) > 200 else f"Query: {enriched_query}")
 
         # Retrieve similar documents
         logger.info("Retrieving similar documents...")
         retrieval_start = time.time()
-        retrieved_docs = await retrieve_similar(enriched_query, top_k, company)
+        retrieved_docs = await retrieve_similar(enriched_query, top_k, company) # @todo: does company filter work correctly in retrieval?
         retrieval_time = time.time() - retrieval_start
         logger.info(f"Retrieved {len(retrieved_docs)} documents in {retrieval_time:.2f}s (company filter: {company})")
         
@@ -67,7 +82,7 @@ async def evaluate(
         logger.info(f"Formatting report as {format}...")
         formatting_start = time.time()
         if format == "markdown":
-            report = format_report_markdown(company, criterion, enriched_query, retrieved_docs, assessment)
+            report = format_report_markdown(company, criterion, enriched_query, retrieved_docs, assessment) # @todo: add date and fix criterion description
         else:
             report = format_report_text(company, criterion, enriched_query, retrieved_docs, assessment)
         formatting_time = time.time() - formatting_start

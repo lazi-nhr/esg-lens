@@ -43,3 +43,52 @@ HF_API_MODEL = os.getenv("HF_API_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 # Hugging Face API authentication (for embeddings and fallback inference)
 HF_API_KEY = os.getenv("HF_API_KEY", "")
 HF_HOME = os.getenv("HF_HOME", "/files/.hf_cache")
+
+# Evaluation Criteria
+# Structured definition of available ESG evaluation criteria
+EVALUATION_CRITERIA = [
+    {
+        "id": "overall",
+        "name": "Overall ESG Assessment",
+        "description": "Comprehensive evaluation of Environmental, Social, and Governance practices",
+        "category": "composite",
+        "question": "Provide a comprehensive ESG assessment covering all three pillars: environmental, social, and governance performance. Include key achievements, gaps, and recommendations.",
+        "context_instructions": "Synthesize insights from all three ESG dimensions. Focus on material issues and strategic importance.",
+        "output_format": "narrative",
+        "required_fields": ["environmental_score", "social_score", "governance_score", "overall_trends", "key_risks"],
+        "retrieval_bias": ["ESG", "sustainability", "corporate responsibility", "material issues"]
+    },
+    {
+        "id": "environment",
+        "name": "Environment (E) Summary",
+        "description": "Environmental sustainability initiatives, climate action, and resource management",
+        "category": "pillar",
+        "question": "What are the company's key environmental initiatives and climate commitments? Include emissions reduction targets, renewable energy use, waste management, and environmental compliance.",
+        "context_instructions": "Emphasize quantifiable metrics, science-based targets, and progress against commitments. Highlight both achievements and areas needing improvement.",
+        "output_format": "structured",
+        "required_fields": ["emissions_targets", "renewable_energy_percent", "waste_reduction", "water_usage", "climate_risks"],
+        "retrieval_bias": ["emissions", "carbon", "renewable energy", "climate change", "environmental risk", "sustainability"]
+    },
+    {
+        "id": "social",
+        "name": "Social (S) Summary",
+        "description": "Social responsibility, employee welfare, community impact, and human rights",
+        "category": "pillar",
+        "question": "What is the company's approach to social responsibility including employee welfare, diversity and inclusion, community engagement, and human rights? Include key programs and their impact.",
+        "context_instructions": "Focus on employee satisfaction, diversity metrics, community investment, and social impact measurement. Address labor practices and supply chain responsibility.",
+        "output_format": "structured",
+        "required_fields": ["employee_diversity", "compensation_equity", "community_investment", "labor_practices", "supply_chain_responsibility"],
+        "retrieval_bias": ["diversity", "inclusion", "employee welfare", "community", "human rights", "labor practices", "supply chain"]
+    },
+    {
+        "id": "governance",
+        "name": "Governance (G) Summary",
+        "description": "Board composition, executive compensation, ethics, and corporate transparency",
+        "category": "pillar",
+        "question": "What is the company's governance structure and approach to ethics? Include board composition, executive compensation philosophy, ethics programs, and transparency practices.",
+        "context_instructions": "Evaluate board diversity, independence, compensation alignment with performance, and governance best practices. Address ethics and compliance frameworks.",
+        "output_format": "structured",
+        "required_fields": ["board_diversity", "board_independence", "ceo_pay_ratio", "ethics_program", "audit_committee"],
+        "retrieval_bias": ["board composition", "executive compensation", "ethics", "compliance", "governance", "transparency", "audit"]
+    },
+]

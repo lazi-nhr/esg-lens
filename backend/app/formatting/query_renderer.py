@@ -23,8 +23,8 @@ def build_enriched_query(company: str = None, criterion: str = None, query: str 
     if criterion:
         parts.append(criterion.lower())
     
-    if company:
-        parts.append(company)
+    #if company:
+    #    parts.append(company)
     
     if query:
         parts.append(query)
