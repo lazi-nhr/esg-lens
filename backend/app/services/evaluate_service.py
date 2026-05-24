@@ -5,7 +5,7 @@ import logging
 import time
 from typing import Dict
 
-from app.retrieval.vector_search import retrieve_similar
+from app.retrieval.hybrid_company_search import retrieve_similar_hybrid
 from app.llm.generator import generate_answer
 from app.formatting.query_renderer import build_enriched_query
 from app.formatting.report_renderer import format_report_markdown, format_report_text
@@ -83,7 +83,7 @@ async def evaluate(
         # Retrieve similar documents
         logger.info("Retrieving similar documents...")
         retrieval_start = time.time()
-        retrieved_docs = await retrieve_similar(
+        retrieved_docs = await retrieve_similar_hybrid(
             retrieval_query,
             top_k,
             company,
