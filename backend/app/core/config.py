@@ -91,4 +91,114 @@ EVALUATION_CRITERIA = [
         "required_fields": ["board_diversity", "board_independence", "ceo_pay_ratio", "ethics_program", "audit_committee"],
         "retrieval_bias": ["board composition", "executive compensation", "ethics", "compliance", "governance", "transparency", "audit"]
     },
+    {
+        "id": "climate_risk",
+        "name": "Climate Risk Management",
+        "description": "Identification, assessment and management of physical and transition climate risks.",
+        "category": "environment",
+        "question": "How does the company identify, assess, and mitigate climate-related physical and transition risks? Describe scenario analysis, integration into strategy, and financial exposure.",
+        "context_instructions": "Prioritize quantified scenario analysis, governance oversight, and alignment with TCFD-style disclosures.",
+        "output_format": "structured",
+        "required_fields": ["risk_assessment_method", "scenario_results", "financial_impacts", "mitigation_measures"],
+        "retrieval_bias": ["climate risk", "physical risk", "transition risk", "scenario analysis", "TCFD"]
+    },
+    {
+        "id": "ghg_emissions",
+        "name": "GHG Emissions & Metrics",
+        "description": "Emissions accounting, scopes 1-3, reduction targets, and progress reporting.",
+        "category": "environment",
+        "question": "What are the company's Scope 1, 2, and 3 emissions, targets and recent progress? Explain methodologies and key emissions drivers.",
+        "context_instructions": "Look for absolute/normalized emissions, third‑party verification, and SBTi alignment where available.",
+        "output_format": "structured",
+        "required_fields": ["scope1", "scope2", "scope3", "targets", "verification"],
+        "retrieval_bias": ["Scope 1", "Scope 2", "Scope 3", "SBTi", "carbon footprint", "emissions intensity"]
+    },
+    {
+        "id": "energy_transition",
+        "name": "Energy Transition & Renewables",
+        "description": "Strategy and progress toward low‑carbon energy sources and energy efficiency.",
+        "category": "environment",
+        "question": "Describe the company's approach to energy transition: renewable procurement, energy efficiency programs, and capital allocation for low‑carbon technologies.",
+        "context_instructions": "Favor quantitative metrics (renewable % of consumption, efficiency gains) and CAPEX commitments.",
+        "output_format": "structured",
+        "required_fields": ["renewable_share", "efficiency_measures", "capex_commitments"],
+        "retrieval_bias": ["renewable energy", "energy efficiency", "power purchase agreement", "renewables"]
+    },
+    {
+        "id": "water_biodiversity",
+        "name": "Water & Biodiversity Stewardship",
+        "description": "Management of water use, impacts on ecosystems, and biodiversity protection.",
+        "category": "environment",
+        "question": "How does the company manage water risks and biodiversity impacts across operations and supply chains? Note targets, site-level actions, and partnerships.",
+        "context_instructions": "Highlight watershed-level risks, water intensity metrics, biodiversity assessments, and mitigation/restoration programs.",
+        "output_format": "structured",
+        "required_fields": ["water_intensity", "biodiversity_assessments", "mitigation_actions"],
+        "retrieval_bias": ["water risk", "biodiversity", "ecosystem", "freshwater", "species", "habitat"]
+    },
+    {
+        "id": "supply_chain",
+        "name": "Supply Chain Sustainability",
+        "description": "Due diligence, supplier standards, and monitoring across suppliers and tiers.",
+        "category": "social",
+        "question": "Describe supply chain due diligence processes, key supplier risks, and remediation/monitoring approaches (including audits and KPIs).",
+        "context_instructions": "Prioritize multi-tier coverage, audit frequency, corrective actions, and supplier engagement programs.",
+        "output_format": "structured",
+        "required_fields": ["due_diligence_process", "audit_coverage", "supplier_kpis"],
+        "retrieval_bias": ["supply chain", "supplier audit", "supplier due diligence", "tier 2", "procurement"]
+    },
+    {
+        "id": "labor_practices",
+        "name": "Labor Practices & Worker Rights",
+        "description": "Workplace safety, fair labor, collective bargaining, and grievance mechanisms.",
+        "category": "social",
+        "question": "What policies and performance metrics relate to worker health & safety, living wages, collective bargaining and grievance mechanisms?",
+        "context_instructions": "Seek incident rates, corrective measures, union engagement, and remediation examples.",
+        "output_format": "structured",
+        "required_fields": ["injury_rate", "wage_practices", "grievance_mechanism", "collective_bargaining"],
+        "retrieval_bias": ["health and safety", "injury rate", "wages", "collective bargaining", "grievance"]
+    },
+    {
+        "id": "dei",
+        "name": "Diversity, Equity & Inclusion",
+        "description": "Workforce diversity metrics, inclusion programs, and equitable practices.",
+        "category": "social",
+        "question": "Provide workforce diversity statistics, advancement programs, pay equity efforts, and measurable inclusion outcomes.",
+        "context_instructions": "Prefer disaggregated data (gender, race/ethnicity, seniority) and time-series trends.",
+        "output_format": "structured",
+        "required_fields": ["diversity_metrics", "pay_equity", "promotion_rates", "inclusion_programs"],
+        "retrieval_bias": ["diversity", "inclusion", "pay equity", "gender split", "underrepresented"]
+    },
+    {
+        "id": "data_privacy_security",
+        "name": "Data Privacy & Cybersecurity",
+        "description": "Policies, incident history, and controls for data protection and cyber resilience.",
+        "category": "governance",
+        "question": "How does the company manage data privacy and cybersecurity risks? Include governance, incident history, and security controls.",
+        "context_instructions": "Look for breach disclosures, third-party audits (SOC2), incident response plans, and board-level oversight.",
+        "output_format": "structured",
+        "required_fields": ["incident_history", "security_controls", "governance_owner"],
+        "retrieval_bias": ["cybersecurity", "data breach", "privacy policy", "SOC2", "incident response"]
+    },
+    {
+        "id": "anti_corruption",
+        "name": "Anti-Corruption & Business Ethics",
+        "description": "Anti-bribery controls, whistleblower programs, and ethical conduct enforcement.",
+        "category": "governance",
+        "question": "Describe policies and performance on anti-corruption, third-party risk management, whistleblowing, and enforcement actions.",
+        "context_instructions": "Prioritize incident disclosures, training coverage, and remediation outcomes.",
+        "output_format": "structured",
+        "required_fields": ["policy_coverage", "training_rates", "investigations", "third_party_screening"],
+        "retrieval_bias": ["anti corruption", "bribery", "whistleblower", "ethics", "compliance"]
+    },
+    {
+        "id": "disclosure_reporting",
+        "name": "Disclosure, Targets & Reporting Quality",
+        "description": "Transparency, quality of reporting, assurance and alignment with reporting standards.",
+        "category": "governance",
+        "question": "Assess the quality and completeness of the company's ESG disclosures, target clarity, and external assurance.",
+        "context_instructions": "Look for standard alignment (GRI, SASB, TCFD/ISSB), third‑party assurance and granular KPIs.",
+        "output_format": "structured",
+        "required_fields": ["reporting_standards", "assurance", "kpi_coverage", "disclosure_gaps"],
+        "retrieval_bias": ["GRI", "SASB", "TCFD", "ISSB", "assurance", "disclosure"]
+    }
 ]

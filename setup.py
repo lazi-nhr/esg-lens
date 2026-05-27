@@ -39,6 +39,9 @@ BACKEND_PORT = os.getenv("BACKEND_PORT", "8500")
 # Frontend configuration
 FRONTEND_PORT = os.getenv("FRONTEND_PORT", "3000")
 
+# Startup timing configuration
+BACKEND_STARTUP_TIMEOUT = int(os.getenv("BACKEND_STARTUP_TIMEOUT", "180"))
+
 # Paths
 SCRIPT_DIR = Path(__file__).parent.absolute()
 BACKEND_DIR = SCRIPT_DIR / "backend"
@@ -202,7 +205,7 @@ def check_database_content():
         return False
 
 
-def wait_for_backend(timeout=60):
+def wait_for_backend(timeout=BACKEND_STARTUP_TIMEOUT):
     """Wait for backend to be ready."""
     print("Waiting for backend to be ready...")
     base_url = build_backend_url(BACKEND_URL, BACKEND_PORT, include_scheme=True)
