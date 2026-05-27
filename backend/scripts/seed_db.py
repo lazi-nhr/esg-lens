@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 logger.info(f"Logging to: {log_file}")
 
 # Data folder paths
-DATA_DIR = Path(__file__).parent.parent.parent / "data" / "raw_pdfs"
+DATA_DIR = Path(__file__).parent.parent.parent / "data" / "raw_pdfs" / "new"
 PROCESSED_DIR = DATA_DIR / "processed"
 
 
