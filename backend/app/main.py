@@ -1,12 +1,14 @@
 """
 FastAPI application setup: create app, register routes, set up middleware.
 """
+import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.connection import init_db
 from app.api.routes import health, documents, query, evaluate, companies
 from app.core.config import BACKEND_HOST, BACKEND_PORT
+from app.llm.generator import warm_up_model
 
 
 def create_app() -> FastAPI:
@@ -27,6 +29,7 @@ def create_app() -> FastAPI:
     async def startup_event():
         """Initialize database on startup."""
         init_db()
+        await asyncio.to_thread(warm_up_model)
 
     # Root endpoint
     @app.get("/")

@@ -24,6 +24,13 @@ def _get_prompt_template() -> str:
     return _prompt_template
 
 
+def warm_up_model() -> None:
+    """Load the model and tokenizer into memory ahead of the first request."""
+    logger.info("Warming up LLM model...")
+    _get_model()
+    logger.info("LLM model warm-up complete")
+
+
 def _build_prompt(company: str, criterion: str, question: str, retrieved_docs: List[Dict]) -> str:
     context_parts = []
     for i, doc in enumerate(retrieved_docs[:3], start=1):

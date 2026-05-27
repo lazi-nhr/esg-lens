@@ -6,7 +6,17 @@ Provides extensive information about indexed documents, companies, and embedding
 import sys
 from pathlib import Path
 from datetime import datetime
-from tabulate import tabulate
+try:
+    from tabulate import tabulate  # type: ignore[import-not-found]
+except ImportError:
+    def tabulate(rows, headers=(), tablefmt=None, disable_numparse=False):
+        lines = []
+        if headers:
+            lines.append(" | ".join(str(header) for header in headers))
+            lines.append("-" * max(len(lines[0]), 1))
+        for row in rows:
+            lines.append(" | ".join(str(cell) for cell in row))
+        return "\n".join(lines)
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -50,21 +60,28 @@ def get_database_stats():
         
         cur.execute("SELECT COUNT(*) as total FROM documents;")
         total_docs = cur.fetchone()['total']
-        
+
+        cur.execute("SELECT COUNT(DISTINCT company) AS companies FROM documents WHERE company IS NOT NULL;")
+        company_count = cur.fetchone()['companies']
+
         cur.execute("""
-            SELECT 
-                COUNT(DISTINCT company) as companies,
-                COUNT(DISTINCT year) as years,
-                COUNT(DISTINCT report_title) as report_types
-            FROM documents;
+            SELECT COUNT(*) AS reports
+            FROM (
+                SELECT DISTINCT company, report_title, year
+                FROM documents
+                WHERE company IS NOT NULL AND report_title IS NOT NULL AND year IS NOT NULL
+            ) AS unique_reports;
         """)
-        counts = cur.fetchone()
+        report_count = cur.fetchone()['reports']
+
+        cur.execute("SELECT COUNT(*) AS vectors FROM documents WHERE embedding IS NOT NULL;")
+        vector_count = cur.fetchone()['vectors']
         
         stats_data = [
-            ["Total Document Chunks", f"{total_docs:,}"],
-            ["Unique Companies", f"{counts['companies']}"],
-            ["Years Represented", f"{counts['years']}"],
-            ["Report Types", f"{counts['report_types']}"],
+            ["Number of Companies", f"{company_count}"],
+            ["Number of Unique Reports", f"{report_count}"],
+            ["Number of Chunks/Vectors", f"{vector_count:,}"],
+            ["Total Document Rows", f"{total_docs:,}"],
         ]
         print(tabulate(stats_data, tablefmt="simple", disable_numparse=True))
         
@@ -74,15 +91,11 @@ def get_database_stats():
         cur.execute("""
             SELECT 
                 company,
-                COUNT(*) as chunks,
-                COUNT(DISTINCT year) as years,
-                MIN(year) as first_year,
-                MAX(year) as last_year,
-                COUNT(DISTINCT report_title) as report_types
+                COUNT(DISTINCT (company, report_title, year)) as reports
             FROM documents
-            WHERE company IS NOT NULL
+            WHERE company IS NOT NULL AND report_title IS NOT NULL AND year IS NOT NULL
             GROUP BY company
-            ORDER BY COUNT(*) DESC;
+            ORDER BY reports DESC, company ASC;
         """)
         
         companies = cur.fetchall()
@@ -91,14 +104,10 @@ def get_database_stats():
             for c in companies:
                 company_data.append([
                     c['company'],
-                    f"{c['chunks']:,}",
-                    c['years'],
-                    c['first_year'],
-                    c['last_year'],
-                    c['report_types']
+                    f"{c['reports']:,}"
                 ])
             
-            headers = ["Company", "Chunks", "Years", "First Year", "Last Year", "Report Types"]
+            headers = ["Company", "Reports"]
             print(tabulate(company_data, headers=headers, tablefmt="grid"))
             print(f"\n{GREEN}✓{NC} {len(companies)} companies indexed\n")
         else:
@@ -138,12 +147,12 @@ def get_database_stats():
         cur.execute("""
             SELECT 
                 report_title,
-                COUNT(*) as chunks,
+                COUNT(DISTINCT (company, report_title, year)) as reports,
                 COUNT(DISTINCT company) as companies
             FROM documents
-            WHERE report_title IS NOT NULL
+            WHERE report_title IS NOT NULL AND company IS NOT NULL AND year IS NOT NULL
             GROUP BY report_title
-            ORDER BY COUNT(*) DESC
+            ORDER BY reports DESC
             LIMIT 20;
         """)
         
@@ -153,48 +162,38 @@ def get_database_stats():
             for r in reports:
                 report_data.append([
                     r['report_title'],
-                    f"{r['chunks']:,}",
+                    f"{r['reports']:,}",
                     r['companies']
                 ])
             
-            headers = ["Report Type", "Chunks", "Companies"]
+            headers = ["Report Title", "Reports", "Companies"]
             print(tabulate(report_data, headers=headers, tablefmt="grid"))
             print()
         
         # === COMPANY + YEAR MATRIX ===
-        print_subheader("🗂️  DOCUMENT MATRIX (Company x Year)")
+        print_subheader("🗂️  REPORTS PER COMPANY")
         
         cur.execute("""
             SELECT 
                 company,
-                year,
-                COUNT(*) as chunks
+                COUNT(DISTINCT (company, report_title, year)) as reports
             FROM documents
-            WHERE company IS NOT NULL AND year IS NOT NULL
-            GROUP BY company, year
-            ORDER BY company, year DESC;
+            WHERE company IS NOT NULL AND report_title IS NOT NULL AND year IS NOT NULL
+            GROUP BY company
+            ORDER BY reports DESC, company ASC;
         """)
         
-        matrix = cur.fetchall()
-        if matrix:
-            # Build a pivot-like display
+        reports_per_company = cur.fetchall()
+        if reports_per_company:
             matrix_data = []
-            current_company = None
-            
-            for m in matrix:
-                if current_company != m['company']:
-                    if current_company is not None:
-                        matrix_data.append([''] * 3)  # Separator
-                    current_company = m['company']
-                
+            for row in reports_per_company:
                 matrix_data.append([
-                    m['company'],
-                    m['year'],
-                    f"{m['chunks']:,}"
+                    row['company'],
+                    f"{row['reports']:,}"
                 ])
-            
-            headers = ["Company", "Year", "Chunks"]
-            print(tabulate(matrix_data, headers=headers, tablefmt="simple"))
+
+            headers = ["Company", "Reports"]
+            print(tabulate(matrix_data, headers=headers, tablefmt="grid"))
             print()
         
         # === EMBEDDING STATISTICS ===
@@ -263,13 +262,13 @@ def get_database_stats():
         largest = cur.fetchall()
         if largest:
             largest_data = []
-            for l in largest:
+            for largest_row in largest:
                 largest_data.append([
-                    l['company'] or 'N/A',
-                    l['report_title'] or 'N/A',
-                    l['year'] or 'N/A',
-                    f"{l['size_chars']:,}",
-                    f"{l['word_count']:,}"
+                    largest_row['company'] or 'N/A',
+                    largest_row['report_title'] or 'N/A',
+                    largest_row['year'] or 'N/A',
+                    f"{largest_row['size_chars']:,}",
+                    f"{largest_row['word_count']:,}"
                 ])
             
             headers = ["Company", "Report Type", "Year", "Size (chars)", "Words"]

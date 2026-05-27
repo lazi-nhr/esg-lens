@@ -121,6 +121,55 @@ def check_database_content():
             password=DB_PASSWORD
         )
         cur = conn.cursor()
+
+        # Summary metrics derived from the documents table
+        try:
+            cur.execute("SELECT COUNT(DISTINCT company) FROM documents WHERE company IS NOT NULL;")
+            company_count = cur.fetchone()[0]
+            print(f"  Companies in database: {company_count}")
+        except Exception as e:
+            print("  Companies in database: (query failed)")
+            print(f"    Error: {type(e).__name__}: {str(e)}")
+
+        try:
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM (
+                    SELECT DISTINCT company, report_title, year
+                    FROM documents
+                    WHERE company IS NOT NULL AND report_title IS NOT NULL AND year IS NOT NULL
+                ) AS unique_reports;
+            """)
+            report_count = cur.fetchone()[0]
+            print(f"  Unique reports: {report_count}")
+        except Exception as e:
+            print("  Unique reports: (query failed)")
+            print(f"    Error: {type(e).__name__}: {str(e)}")
+
+        try:
+            cur.execute("SELECT COUNT(*) FROM documents WHERE embedding IS NOT NULL;")
+            vector_count = cur.fetchone()[0]
+            print(f"  Chunks/vectors: {vector_count}")
+        except Exception as e:
+            print("  Chunks/vectors: (query failed)")
+            print(f"    Error: {type(e).__name__}: {str(e)}")
+
+        try:
+            cur.execute("""
+                SELECT company, COUNT(DISTINCT (company, report_title, year)) AS reports
+                FROM documents
+                WHERE company IS NOT NULL AND report_title IS NOT NULL AND year IS NOT NULL
+                GROUP BY company
+                ORDER BY reports DESC, company ASC;
+            """)
+            companies = cur.fetchall()
+            if companies:
+                print("  Reports per company:")
+                for company, reports in companies:
+                    print(f"    - {company}: {reports}")
+        except Exception as e:
+            print("  Reports per company: (query failed)")
+            print(f"    Error: {type(e).__name__}: {str(e)}")
         
         # Check documents table
         try:
@@ -129,15 +178,6 @@ def check_database_content():
             print(f"  Documents: {doc_count}")
         except Exception as e:
             print("  Documents: (table not found)")
-            print(f"    Error: {type(e).__name__}: {str(e)}")
-        
-        # Check companies table
-        try:
-            cur.execute("SELECT COUNT(*) FROM companies")
-            comp_count = cur.fetchone()[0]
-            print(f"  Companies: {comp_count}")
-        except Exception as e:
-            print("  Companies: (table not found)")
             print(f"    Error: {type(e).__name__}: {str(e)}")
         
         # List tables
