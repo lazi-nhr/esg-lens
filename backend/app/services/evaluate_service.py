@@ -114,9 +114,9 @@ async def evaluate(
         logger.info(f"Formatting report as {format}...")
         formatting_start = time.time()
         if format == "markdown":
-            report = format_report_markdown(company, criterion, base_query, retrieved_docs, assessment) # @todo: add date and fix criterion description
+            report = format_report_markdown(company, criterion_config["name"], base_query, retrieved_docs, assessment)
         else:
-            report = format_report_text(company, criterion, base_query, retrieved_docs, assessment)
+            report = format_report_text(company, criterion_config["name"], base_query, retrieved_docs, assessment)
         formatting_time = time.time() - formatting_start
         logger.info(f"Report formatted in {formatting_time:.2f}s")
         logger.debug(f"Report size: {len(report)} characters")
