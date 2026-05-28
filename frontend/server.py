@@ -3,7 +3,7 @@ Reverse-proxy frontend server.
 
 This server does two jobs:
   1. Serves static files (index.html, etc.) for browser requests.
-  2. Acts as a *reverse proxy* for API paths (/health, /documents, /query):
+    2. Acts as a *reverse proxy* for API paths (/health, /documents, /query, /criteria):
      it receives the request from the browser, forwards it to the backend
      over the Nuvolos internal network, and returns the backend's response.
 
@@ -120,6 +120,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
         if (path_without_query == '/health' or 
             path_without_query.startswith('/documents') or 
             path_without_query.startswith('/query') or
+            path_without_query.startswith('/criteria') or
             path_without_query.startswith('/companies')): # <--- ADD THIS LINE
             self.proxy_to_backend('GET')
             return
@@ -171,6 +172,7 @@ class StaticFileHandler(SimpleHTTPRequestHandler):
         if ('/documents' in path_without_query or 
             '/query' in path_without_query or
             '/evaluate' in path_without_query or
+            '/criteria' in path_without_query or
             '/companies' in path_without_query): # <-- Added here too!
             self.send_response(200)
             # ... rest of the code stays the same

@@ -1,6 +1,10 @@
 // --- Theme Toggle Logic ---
 const themeToggle = document.getElementById('themeToggle');
 
+function getApiBasePath() {
+    return window.location.pathname.startsWith('/proxy/') ? '/proxy/3000' : '';
+}
+
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
@@ -10,13 +14,9 @@ themeToggle.addEventListener('click', () => {
 // --- Dynamic Dropdown Builder ---
 async function loadCompanies() {
     const companySelect = document.getElementById('companySelect');
-    
-    // Check if we need the Nuvolos proxy path, just like in your evaluate function
-    const basePath = window.location.pathname.startsWith('/proxy/') ? '/proxy/3000' : '';
 
     try {
-        // 1. Fetch the data from the proxy
-        const response = await fetch(basePath + '/companies');
+        const response = await fetch(getApiBasePath() + '/companies');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -40,8 +40,33 @@ async function loadCompanies() {
     }
 }
 
+async function loadCriteria() {
+    const criteriaSelect = document.getElementById('criteriaSelect');
+
+    try {
+        const response = await fetch(getApiBasePath() + '/criteria');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const criteria = await response.json();
+
+        criteria.forEach(criterion => {
+            const option = document.createElement('option');
+            option.value = criterion.id;
+            option.textContent = criterion.name;
+            criteriaSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading criteria from backend:', error);
+        criteriaSelect.innerHTML = '<option value="" disabled selected>Error loading criteria</option>';
+    }
+}
+
 // Fire the function immediately when the script loads!
 loadCompanies();
+loadCriteria();
 
 let currentMarkdownReport = ""; // Stores the raw text for the PDF
 
@@ -117,9 +142,7 @@ document.getElementById('esgEvalForm').addEventListener('submit', async (e) => {
     typeMarkdownInto(reportOutput, `Generating report for **${companyLabel}** (${criteriaLabel})...`, { charsPerSecond: 60 });
 
     try {
-        const basePath = window.location.pathname.startsWith('/proxy/') ? '/proxy/3000' : '';
-        
-        const response = await fetch(basePath + '/evaluate', {
+        const response = await fetch(getApiBasePath() + '/evaluate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
