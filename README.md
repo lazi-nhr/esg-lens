@@ -8,7 +8,7 @@ ESG Reporting Generator is a Retrieval Augmented Generation system for producing
 
 ## Usage
 
-<div align="center">
+<div align="right">
 	<img src="docs/images/ui.png" alt="User interface" width="300" />
 </div>
 
@@ -25,7 +25,7 @@ The database contains reports from public companies. For this project, the corpu
 
 ## Architecture
 
-<div align="center">
+<div align="right">
 	<img src="docs/images/architecture.png" alt="Architecture diagram" width="200" />
 </div>
 
