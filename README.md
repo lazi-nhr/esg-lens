@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="docs/images/logo.jpg" alt="ESG Lens logo" width="200" />
+	<img src="docs/images/logo.png" alt="ESG Lens logo" width="200" />
 </div>
 
 # ESG Reporting Generator
