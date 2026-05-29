@@ -56,7 +56,7 @@ The frontend sends the selected company and evaluation criterion to the FastAPI 
 
 ## Quick Start
 
-### Prereqs
+### prerequisites
 
 - Python
 - virtualenv
@@ -66,11 +66,12 @@ The frontend sends the selected company and evaluation criterion to the FastAPI 
 ### Clone and environment
 
 ```bash
+git clone https://github.com/lazi-nhr/esg-reporting-rag-system
 cd /path/to/esg-reporting-rag-system
 cp .env.example .env
 ```
 
-Edit `.env` and set your database credentials, API key, and model settings.
+Edit the copied `.env` as described in the **Configuration** section below.
 
 ### Install
 
@@ -122,7 +123,7 @@ Open the VS Code Server URL for port 3000 in your browser:
 2. Find port `3000`.
 3. Click the forwarded address link.
 
-### Logs and GPU usage
+### Logs
 
 ```bash
 tail -f /tmp/backend.log
@@ -130,7 +131,7 @@ tail -f /tmp/frontend.log
 ```
 
 
-### 5. View GPU usage (if applicable)
+### 5. View GPU usage (cuda only)
 
 ```bash
 watch -n 1 nvidia-smi
