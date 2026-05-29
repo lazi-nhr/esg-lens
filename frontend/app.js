@@ -191,12 +191,14 @@ document.getElementById('downloadPdfBtn').addEventListener('click', () => {
     printDocument.style.fontFamily = 'Arial, sans-serif';
     printDocument.style.fontSize = '14px';
     printDocument.style.lineHeight = '1.6';
+    printDocument.style.paddingBottom = '24px';
 
     // 3. Add Spacing CSS (Fixed for stacked headers)
     const styleBlock = document.createElement('style');
     styleBlock.innerHTML = `
         .section-box { margin-top: 30px; }
         .section-box:first-child { margin-top: 0; }
+        .report-content { clear: both; }
         
         /* Only remove the top margin if the header is the very first item in the box */
         .section-box > h1:first-child,
@@ -209,7 +211,7 @@ document.getElementById('downloadPdfBtn').addEventListener('click', () => {
     printDocument.appendChild(styleBlock);
 
     // 4. Add Your Logo
-    const logoHtml = `<img src="logo_pdf.png" style="float: right; max-width: 150px; margin-left: 20px; margin-bottom: 20px;" />`;
+    const logoHtml = `<div style="text-align: right; margin-bottom: 20px;"><img src="logo_pdf.png" style="display: inline-block; max-width: 150px;" /></div>`;
 
     // 5. Parse the Markdown into a TEMPORARY container
     const tempDiv = document.createElement('div');
