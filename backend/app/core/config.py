@@ -4,11 +4,17 @@ Configuration and environment variables.
 import os
 
 # Load environment variables from .env file (if it exists)
+# add .env file to root of project to hide sensitive info like API keys
 from dotenv import load_dotenv
 load_dotenv()
 
 # Database
-DB_HOST = os.getenv("DB_HOST", "nv-service-b48efcd4fbe8cf4a875a2ccb70e0e21b")
+
+# adjust nuvolos service name
+# nuvolos -> start backend application (or Tesla T4) -> hover over the opening application -> copy nv-number
+DB_HOST = os.getenv("DB_HOST", "nv-service-b48efcd4fbe8cf4a875a2ccb70e0e21b") # adjust nuvolos service name as needed (Start)
+
+
 DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "nuvolos")
 DB_USER = os.getenv("DB_USER", "nuvolos")
