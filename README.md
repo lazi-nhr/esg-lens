@@ -1,10 +1,9 @@
 <div align="center">
-	<img src="docs/images/logo.png" alt="ESG Lens logo" width="200" />
+	<img src="docs/images/logo.png" alt="ESG Lens logo" width="250" />
 </div>
 
-# ESG Reporting Generator
 
-ESG Reporting Generator is a Retrieval Augmented Generation system for producing structured ESG reports for public companies. The repository contains the full stack needed to ingest company reports, search them with hybrid retrieval, and generate standardized evaluation reports through a web interface.
+ESG Lens is a Retrieval-Augmented Generation (RAG) system for producing structured ESG reports for public companies. The repository contains the full stack needed to ingest company reports, search them with vector retrieval, and pass the relevant context to an LLM that generates a standardized evaluation report.
 
 ## Usage
 
